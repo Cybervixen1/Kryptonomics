@@ -22,7 +22,7 @@ contract TodoList {
   );
 
     constructor() public {
-        createTask("Genesis Block");
+        //createTask("Genesis Block");
     }
 
     function createTask(string memory _content) public {

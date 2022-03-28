@@ -1,5 +1,6 @@
 App = {
   loading: false,
+  signOff: false,
   contracts: {},
 
   load: async () => {
@@ -56,6 +57,12 @@ App = {
 
     // Hydrate the smart contract with values from the blockchain
     App.todoList = await App.contracts.TodoList.deployed()
+    const checklist = $('#checklist')
+    const notenc = $('#noteNotCompleted')
+    const notec = $('#noteCompleted')
+    checklist.hide()
+    notenc.hide()
+    notec.hide()
   },
 
   render: async () => {
@@ -81,7 +88,7 @@ App = {
     // Load the total task count from the blockchain
     const taskCount = await App.todoList.taskCount()
     const $taskTemplate = $('.taskTemplate')
-
+    var signOffStatus = 1
     // Render out each task with a new task template
     for (var i = 1; i <= taskCount; i++) {
       // Fetch the task data from the blockchain
@@ -102,7 +109,14 @@ App = {
       if (taskCompleted) {
         $('#completedTaskList').append($newTaskTemplate)
       } else {
+        signOffStatus = 0
         $('#taskList').append($newTaskTemplate)
+      }
+
+      if (signOffStatus) {
+        App.setSignOffStatus(true)
+      } else {
+        App.setSignOffStatus(false)
       }
 
       // Show the task
@@ -136,8 +150,23 @@ App = {
       loader.hide()
       content.show()
     }
+
+  },
+
+  setSignOffStatus: (boolean) => {
+    App.signOff = boolean
+    const notenc = $('#noteNotCompleted')
+    const notec = $('#noteCompleted')
+    if (boolean) {
+      notenc.hide()
+      notec.show()
+    } else {
+      notenc.show()
+      notec.hide()
+    }
+
   }
-  }
+}
   
   
   $(() => {
